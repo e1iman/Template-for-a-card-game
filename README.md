@@ -1,38 +1,27 @@
-﻿A template project for a card game with a logic of moving cards on a board between multiple stacks.
+﻿﻿A template project for a card game with a logic of moving cards on a board between multiple stacks.
 
 Architecture is built using the MVP architecture.
-TODO: Add an assembly to the project to avoid unnecessary references, thus breaking the MVP approach
 
-There is no DI integration, but it is designed to follow its principles, where an entry point for a game logic is located under the installer.
-
+Entry point for the game logic is located under the installer.
 [GameInstaller](Assets/CardGame/Installers/GameInstaller.cs)
 It contains logic that initializes a board of 5 stacks. Where the last stack is empty.
 Use this class as an entry point to the game logic and initialization.
-Extract initialization logic to a separate layer, which will allow you to provide a starting-level config from a server, etc. 
+Extract initialization logic to a separate layer, which will allow you to provide a starting-level config from a server, etc.
 
 [IBoard](Assets/CardGame/Models/IBoard.cs)
 It is a model class representing the core logic of a card game that allows for moving cards freely between stacks.
-Extend it with move rules for implementing different game modes that will check if the move is valid or can be executed.
+As typically a casual games right now often has a power up to move a card from inside a stack, the code for `IBoard` model allows you to set what Card you want to move and the index of a target stack.
+If a game needs a custom check for what card is available to be moved, it is expected to be implemented via custom [IMoveValidation](Assets/CardGame/Models/IMoveValidation.cs)
 
-Right now, there is a mocked logic to make a random move,
+Right now, there is a mocked logic to make a random move.
+For fancy drag and drop / or point a click, a custom controller is required to be implemented.
+It can use `IMoveValidation` to check if a move is valid to play a custom animation for invalid moves.
+For the sake of saving time template now only contains mocked "make random move" logic.
 
-```
-        public void MakeRandomMove()
-        {
-            CardStack randomStackWithCards = board.CardStacks.GetRandomElement(s => s.Cards.Count > 0);
-            Card cardToMove = randomStackWithCards.Cards.Last();
-            while (true) {
-                int stackIndex = Random.Range(0, board.CardStacks.Count);
-                if (board.CardStacks[stackIndex].Cards.Contains(cardToMove)) {
-                    continue;
-                }
-                board.MoveCard(cardToMove, stackIndex);
-                return;
-            }
-        }
-```
-So consider making an input controller with a state machine to implement a drag and drop, or point and click mechanic for cards movement.
-IBoard will return null if the move is invalid.
+Future improvements:
+* Move to DI (Zenject / VContainer)
+* Add assemblies to isolate Models / Presenters / Views
+* Add controllers to trigger cards move animation.
 
 AI tools used:
 * Grammarly AI to fix typos in readme file)

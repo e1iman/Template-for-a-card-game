@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CardGame.DTOs;
 
 namespace CardGame.Models
@@ -7,11 +8,13 @@ namespace CardGame.Models
     public class Board : IBoard
     {
         readonly List<CardStack> cardStacks;
+        readonly List<IMoveValidation> moveValidations;
         readonly Stack<MoveInfo> undoHistory = new();
 
-        public Board(List<CardStack> cardStacks)
+        public Board(List<CardStack> cardStacks, List<IMoveValidation> moveValidations)
         {
             this.cardStacks = cardStacks;
+            this.moveValidations = moveValidations;
         }
 
         public event Action<MoveInfo> CardMoved;
@@ -45,6 +48,10 @@ namespace CardGame.Models
 
         MoveInfo? MoveCardInternal(Card card, int stackIndex)
         {
+            if (moveValidations.Any(r => !r.CanPerformMove(card, stackIndex))) {
+                return null;
+            }
+            
             foreach (CardStack cardStack in cardStacks) {
                 if (cardStack.RemoveCard(card)) {
                     cardStacks[stackIndex].Push(card);

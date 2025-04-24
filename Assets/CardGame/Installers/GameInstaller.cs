@@ -46,7 +46,11 @@ namespace CardGame.Installers
                 new(new List<Card>())
             };
 
-            board = new Board(cardStacks);
+            var moveValidations = new List<IMoveValidation>() {
+                new DefaultMoveValidation(),
+            };
+
+            board = new Board(cardStacks, moveValidations);
 
             var boardPresenter = new BoardPresenter(boardView, board);
 
