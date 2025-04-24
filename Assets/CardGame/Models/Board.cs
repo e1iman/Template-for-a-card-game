@@ -23,13 +23,17 @@ namespace CardGame.Models
             MoveInfo? moveInfo = MoveCardInternal(card, stackIndex);
             if (moveInfo.HasValue) {
                 undoHistory.Push(moveInfo.Value);
+                CardMoved?.Invoke(moveInfo.Value);
             }
         }
 
         public void UndoMove()
         {
             if (undoHistory.TryPop(out MoveInfo lastMove)) {
-                MoveCardInternal(lastMove.card, lastMove.fromStackIndex);
+                MoveInfo? moveInfo = MoveCardInternal(lastMove.card, lastMove.fromStackIndex);
+                if (moveInfo.HasValue) {
+                    CardMoved?.Invoke(moveInfo.Value);
+                }
             }
         }
 
@@ -44,7 +48,6 @@ namespace CardGame.Models
                 if (cardStack.RemoveCard(card)) {
                     cardStacks[stackIndex].Push(card);
                     var moveInfo = new MoveInfo(card, cardStacks.IndexOf(cardStack), stackIndex);
-                    CardMoved?.Invoke(moveInfo);
                     return moveInfo;
                 }
             }

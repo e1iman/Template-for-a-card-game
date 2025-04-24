@@ -19,7 +19,7 @@ namespace CardGame.Presenters
         {
             model.CardMoved += Model_OnCardMoved;
             view.UndoButtonClicked += View_OnUndoButtonClicked;
-            
+
             UpdateUndoButtonVisibility();
         }
 
@@ -32,7 +32,7 @@ namespace CardGame.Presenters
         {
             model.UndoMove();
         }
-        
+
         void UpdateUndoButtonVisibility()
         {
             view.SetUndoButtonVisible(model.CanUndoMove());
