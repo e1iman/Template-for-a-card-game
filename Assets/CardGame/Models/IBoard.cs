@@ -8,7 +8,7 @@ namespace CardGame.Models
     {
         IReadOnlyList<CardStack> CardStacks { get; }
         event Action<MoveInfo> CardMoved;
-        void MoveCard(Card card, int stackIndex);
+        MoveInfo? MoveCard(Card card, int stackIndex);
         void UndoMove();
         bool CanUndoMove();
     }

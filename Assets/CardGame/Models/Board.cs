@@ -18,13 +18,14 @@ namespace CardGame.Models
 
         public IReadOnlyList<CardStack> CardStacks => cardStacks;
 
-        public void MoveCard(Card card, int stackIndex)
+        public MoveInfo? MoveCard(Card card, int stackIndex)
         {
             MoveInfo? moveInfo = MoveCardInternal(card, stackIndex);
             if (moveInfo.HasValue) {
                 undoHistory.Push(moveInfo.Value);
                 CardMoved?.Invoke(moveInfo.Value);
             }
+            return null;
         }
 
         public void UndoMove()
