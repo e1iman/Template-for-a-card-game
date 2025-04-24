@@ -19,10 +19,15 @@ namespace CardGame.Presenters
         public void Initialize()
         {
             model.CardsUpdated += Model_OnCardsUpdated;
-            view.DisplayCards(model.Cards);
+            UpdateDisplayedCards();
         }
 
         void Model_OnCardsUpdated(IReadOnlyList<Card> cards)
+        {
+            UpdateDisplayedCards();
+        }
+
+        void UpdateDisplayedCards()
         {
             view.DisplayCards(model.Cards);
         }

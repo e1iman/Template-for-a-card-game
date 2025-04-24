@@ -13,8 +13,11 @@ namespace CardGame.Installers
         BoardView boardView;
 
         [SerializeField]
-        StackView stackView;
+        StackView stackViewPrefab;
 
+        [SerializeField]
+        Transform stackViewsContainer;
+        
         void Start()
         {
             var cardStacks = new List<CardStack> {
@@ -42,7 +45,13 @@ namespace CardGame.Installers
             var board = new Board(cardStacks);
 
             var boardPresenter = new BoardPresenter(boardView, board);
+
+            foreach (Transform child in stackViewsContainer) {
+                Destroy(child.gameObject);
+            }
+            
             foreach (CardStack cardStack in board.CardStacks) {
+                var stackView = Instantiate(stackViewPrefab, stackViewsContainer);
                 var stackPresenter = new StackPresenter(stackView, cardStack);
                 stackPresenter.Initialize();
             }

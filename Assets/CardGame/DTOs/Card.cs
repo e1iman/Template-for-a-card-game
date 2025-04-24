@@ -10,10 +10,5 @@
 
         public CardValue Value { get; }
         public CardSuit Suit { get; }
-
-        public override string ToString()
-        {
-            return $"{Value} of {Suit}";
-        }
     }
 }

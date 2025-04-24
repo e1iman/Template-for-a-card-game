@@ -19,7 +19,7 @@ namespace CardGame.Views
             }
 
             foreach (Card card in cards) {
-                CardView cardView = Instantiate(cardViewPrefab);
+                CardView cardView = Instantiate(cardViewPrefab, cardsContainer);
                 cardView.Initialize(card);
             }
         }

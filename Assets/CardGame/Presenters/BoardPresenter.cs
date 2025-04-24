@@ -19,16 +19,23 @@ namespace CardGame.Presenters
         {
             model.CardMoved += Model_OnCardMoved;
             view.UndoButtonClicked += View_OnUndoButtonClicked;
+            
+            UpdateUndoButtonVisibility();
         }
 
         void Model_OnCardMoved(MoveInfo moveInfo)
         {
-            view.SetUndoButtonVisible(model.CanUndoMove());
+            UpdateUndoButtonVisibility();
         }
 
         void View_OnUndoButtonClicked()
         {
             model.UndoMove();
+        }
+        
+        void UpdateUndoButtonVisibility()
+        {
+            view.SetUndoButtonVisible(model.CanUndoMove());
         }
     }
 }
