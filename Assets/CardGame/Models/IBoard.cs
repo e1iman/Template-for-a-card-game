@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CardGame.Common;
 using CardGame.DTOs;
 
 namespace CardGame.Models
@@ -8,7 +9,7 @@ namespace CardGame.Models
     {
         IReadOnlyList<CardStack> CardStacks { get; }
         event Action<MoveInfo> CardMoved;
-        MoveInfo? MoveCard(Card card, int stackIndex);
+        Result<MoveInfo> TryMoveCard(Card card, int targetMoveStackIndex);
         void UndoMove();
         bool CanUndoMove();
     }

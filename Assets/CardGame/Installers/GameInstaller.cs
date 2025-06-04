@@ -20,7 +20,7 @@ namespace CardGame.Installers
         [SerializeField]
         Transform stackViewsContainer;
 
-        Board board;
+        IBoard board;
 
         void Start()
         {
@@ -46,8 +46,8 @@ namespace CardGame.Installers
                 new(new List<Card>())
             };
 
-            var moveValidations = new List<IMoveValidation>() {
-                new DefaultMoveValidation(),
+            var moveValidations = new List<IMoveValidation> {
+                new NoRestrictionMoveValidation(),
             };
 
             board = new Board(cardStacks, moveValidations);
@@ -76,7 +76,7 @@ namespace CardGame.Installers
                 if (board.CardStacks[stackIndex].Cards.Contains(cardToMove)) {
                     continue;
                 }
-                board.MoveCard(cardToMove, stackIndex);
+                board.TryMoveCard(cardToMove, stackIndex);
                 return;
             }
         }

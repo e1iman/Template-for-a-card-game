@@ -14,7 +14,7 @@ namespace CardGame.Views
 
         public void DisplayCards(IReadOnlyList<Card> cards)
         {
-            foreach (Transform child in transform) {
+            foreach (Transform child in cardsContainer) {
                 Destroy(child.gameObject);
             }
 

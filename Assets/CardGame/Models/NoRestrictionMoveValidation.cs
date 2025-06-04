@@ -2,7 +2,7 @@
 
 namespace CardGame.Models
 {
-    public class DefaultMoveValidation : IMoveValidation
+    public class NoRestrictionMoveValidation : IMoveValidation
     {
         public bool CanPerformMove(Card card, int stackIndex)
         {

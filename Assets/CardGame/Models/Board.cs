@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CardGame.Common;
 using CardGame.DTOs;
 
 namespace CardGame.Models
@@ -21,23 +22,19 @@ namespace CardGame.Models
 
         public IReadOnlyList<CardStack> CardStacks => cardStacks;
 
-        public MoveInfo? MoveCard(Card card, int stackIndex)
+        public Result<MoveInfo> TryMoveCard(Card card, int targetMoveStackIndex)
         {
-            MoveInfo? moveInfo = MoveCardInternal(card, stackIndex);
-            if (moveInfo.HasValue) {
-                undoHistory.Push(moveInfo.Value);
-                CardMoved?.Invoke(moveInfo.Value);
-            }
-            return null;
+            var moveInfo = MoveCardInternal(card, targetMoveStackIndex).OnSuccess(move => {
+                undoHistory.Push(move);
+                CardMoved?.Invoke(move);
+            });
+            return moveInfo;
         }
 
         public void UndoMove()
         {
             if (undoHistory.TryPop(out MoveInfo lastMove)) {
-                MoveInfo? moveInfo = MoveCardInternal(lastMove.card, lastMove.fromStackIndex);
-                if (moveInfo.HasValue) {
-                    CardMoved?.Invoke(moveInfo.Value);
-                }
+                MoveCardInternal(lastMove.card, lastMove.fromStackIndex).OnSuccess(CardMoved);
             }
         }
 
@@ -46,20 +43,20 @@ namespace CardGame.Models
             return undoHistory.Count > 0;
         }
 
-        MoveInfo? MoveCardInternal(Card card, int stackIndex)
+        Result<MoveInfo> MoveCardInternal(Card card, int stackIndex)
         {
             if (moveValidations.Any(r => !r.CanPerformMove(card, stackIndex))) {
-                return null;
+                return Result<MoveInfo>.Failure("Move is not allowed");
             }
             
             foreach (CardStack cardStack in cardStacks) {
                 if (cardStack.RemoveCard(card)) {
                     cardStacks[stackIndex].Push(card);
                     var moveInfo = new MoveInfo(card, cardStacks.IndexOf(cardStack), stackIndex);
-                    return moveInfo;
+                    return moveInfo.ToResult();
                 }
             }
-            return null;
+            return Result<MoveInfo>.Failure("Card is not present in any of a stack");
         }
     }
 }
